@@ -1,4 +1,4 @@
-import { Button, Grid, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React from "react";
@@ -39,8 +39,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   }, [cart]);
 
   return (
-    <Stack>
-      <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr)">
+    <Stack spacing={6}>
+      <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
         {products.map((product) => (
           <Stack
             borderRadius="md"
@@ -48,10 +48,16 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             key={product.id}
             backgroundColor="gray.100"
             spacing={3}
+            
           >
+              <Image
+                maxHeight={128}
+                objectFit="cover"
+                src={product.image}
+              ></Image>
             <Stack spacing={1}>
               <Text>{product.title}</Text>
-              <Text fontSize="sm" fontWeight="50" color="green.500">
+              <Text fontSize="sm" fontWeight="500" color="green.500">
                 {parseCurrency(product.price)}
               </Text>
             </Stack>
@@ -70,10 +76,19 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         <Link
           href={`https://wa.me/5491122525938?text=${encodeURIComponent(text)}`}
         >
-          <Button colorScheme="whatsapp">
-            {" "}
-            Completar pedido ({cart.length}) {cart.length==1? 'producto': 'productos'}
-          </Button>
+          <Flex
+            padding={4}
+            bottom={4}
+            position="sticky"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Button colorScheme="whatsapp">
+              {" "}
+              Completar pedido ({cart.length}){" "}
+              {cart.length == 1 ? "producto" : "productos"}
+            </Button>
+          </Flex>
         </Link>
       )}
     </Stack>

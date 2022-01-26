@@ -25,7 +25,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           padding={4}
         >
           <VStack marginBottom={6}>
-            <Image borderRadius={9999} src="//placehold.it/128x128"></Image>
+            <Image borderRadius={1} borderColor="black" borderWidth={1} src="https://res.cloudinary.com/dywphbg73/image/upload/c_scale,w_128/v1643173989/logo_yogfat.jpg"></Image>
             <Heading>Guanaco Posadas</Heading>
             <Text>- Accesorios bazar y regalos -</Text>
           </VStack>
