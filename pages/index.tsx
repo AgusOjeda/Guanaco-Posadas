@@ -2,8 +2,10 @@ import { Box, Button, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React from "react";
+import Carrito from "../components/carrito";
 import api from "../product/api";
 import { Product } from "../product/types";
+
 interface Props {
   products: Product[];
 }
@@ -21,23 +23,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
       currency: "ARS",
     });
   }
-
-  const text = React.useMemo(() => {
-    return cart
-      .reduce(
-        (message, product) =>
-          message.concat(
-            `* ${product.title} - ${parseCurrency(product.price)}*\n`
-          ),
-        ``
-      )
-      .concat(
-        `\nTotal: ${parseCurrency(
-          cart.reduce((total, product) => total + product.price, 0)
-        )}`
-      );
-  }, [cart]);
-
   return (
     <Stack spacing={6}>
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
@@ -73,23 +58,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         ))}
       </Grid>
       {Boolean(cart.length) && (
-        <Link
-          href={`https://wa.me/5491122525938?text=${encodeURIComponent(text)}`}
-        >
-          <Flex
-            padding={4}
-            bottom={4}
-            position="sticky"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Button colorScheme="whatsapp">
-              {" "}
-              Completar pedido ({cart.length}){" "}
-              {cart.length == 1 ? "producto" : "productos"}
-            </Button>
-          </Flex>
-        </Link>
+        <Carrito cart={cart}/>
       )}
     </Stack>
   );
