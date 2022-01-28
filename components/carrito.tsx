@@ -1,7 +1,7 @@
 import React from "react";
-import { Product } from "../product/types";
+import { ICarrito, Product } from "../product/types";
 import Link from "next/link";
-import { Box, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
@@ -14,14 +14,14 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
-import { parseCurrency } from "../helper/helper";
+import { countAllBasket, parseCurrency } from "../helper/helper";
 import CheckoutWhatsapp from "./CheckoutWhatsapp";
 
 interface Props {
-  cart: Product[];
+  cart: ICarrito[];
 }
 
-const Carrito: React.FC<Props> = ({ cart }) => {
+const Basket: React.FC<Props> = ({ cart }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
 
@@ -30,63 +30,92 @@ const Carrito: React.FC<Props> = ({ cart }) => {
       .reduce(
         (message, product) =>
           message.concat(
-            `* ${product.title} - ${parseCurrency(product.price)}*\n`
+            `* ${product.title} - *x${product.quantity}* - ${parseCurrency(
+              product.price,
+              product.quantity
+            )} *\n`
           ),
         ``
       )
       .concat(
         `\nTotal: ${parseCurrency(
-          cart.reduce((total, product) => total + product.price, 0)
+          cart.reduce(
+            (total, product) => total + product.price * product.quantity,
+            0
+          ),
+          0
         )}`
       );
   }, [cart]);
-  console.log(cart);
   return (
-    <Flex
+    <><Flex
       padding={4}
       bottom={4}
       position="sticky"
       alignItems="center"
       justifyContent="center"
     >
-      <Button ref={btnRef} colorScheme="teal" onClick={onOpen}>
+      <Button ref={btnRef} colorScheme="purple" onClick={onOpen}>
         {" "}
-        Completar pedido ({cart.length}){" "}
+        Completar pedido ({countAllBasket(cart)}){" "}
         {cart.length == 1 ? "producto" : "productos"}
       </Button>
-      <Drawer
-        isOpen={isOpen}
-        placement="right"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-      >
+    </Flex><Drawer
+      isOpen={isOpen}
+      placement="right"
+      onClose={onClose}
+      finalFocusRef={btnRef}
+    >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <Text>Carrito</Text>
+            <Text>Basket</Text>
           </DrawerHeader>
 
           <DrawerBody>
             {cart.map((product) => (
               <Stack key={product.id}>
                 <Stack spacing={1}>
-                  <Text>{product.title}</Text>
-                  <Text fontSize="sm" fontWeight="500" color="green.500">
-                    {parseCurrency(product.price)}
+                  <Text>
+                    {product.title} x{product.quantity}
                   </Text>
+                  <Text fontSize="sm" fontWeight="500" color="green.500">
+                    {parseCurrency(product.price, product.quantity)}
+                  </Text>
+                  <Divider />
                 </Stack>
               </Stack>
             ))}
           </DrawerBody>
 
           <DrawerFooter>
-            <CheckoutWhatsapp cart={cart} text={text}></CheckoutWhatsapp>
+            <Grid>
+              <Divider/>
+              <Text
+                fontSize="large"
+                fontWeight="600"
+                position="sticky"
+                alignItems="center"
+                justifyContent="center"
+                padding={4}
+              >
+                Total:
+                {parseCurrency(
+                  cart.reduce(
+                    (total, product) => total + product.price * product.quantity,
+                    0
+                  ),
+                  0
+                )}
+              </Text>
+              <Divider/>
+              <CheckoutWhatsapp cart={cart} text={text}></CheckoutWhatsapp>
+            </Grid>
           </DrawerFooter>
         </DrawerContent>
-      </Drawer>
-    </Flex>
+      </Drawer></>
   );
 };
 
-export default Carrito;
+export default Basket;

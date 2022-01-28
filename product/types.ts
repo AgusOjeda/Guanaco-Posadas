@@ -7,3 +7,10 @@ export interface Product {
     image2: string;
     price: number
 }
+
+export interface ICarrito {
+    id: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }

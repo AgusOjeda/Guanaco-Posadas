@@ -2,27 +2,40 @@ import { Box, Button, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React from "react";
-import Carrito from "../components/carrito";
+import Basket from "../components/carrito";
+import { parseCurrency } from "../helper/helper";
 import api from "../product/api";
-import { Product } from "../product/types";
+import { ICarrito, Product } from "../product/types";
 
 interface Props {
   products: Product[];
 }
 
 const IndexRoute: React.FC<Props> = ({ products }) => {
-  const [cart, setCart] = React.useState<Product[]>([]);
+  const [cart, setCart] = React.useState<ICarrito[]>([]);
 
   function handleAddToCart(product: Product) {
-    setCart((cart) => cart.concat(product));
+    let newCartProduct: ICarrito;
+    newCartProduct = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity: 0
+    }
+    const exist = cart.find((x) => x.id === newCartProduct.id);
+    if (exist) {
+      setCart(
+        cart.map((x) =>
+          x.id === product.id ? { ...exist, quantity: exist.quantity + 1 } : x
+        )
+      );
+    }else{
+      setCart([...cart, {...newCartProduct, quantity:1}]);
+
+    }
+
   }
 
-  function parseCurrency(value: number): string {
-    return value.toLocaleString("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    });
-  }
   return (
     <Stack spacing={6}>
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
@@ -33,17 +46,16 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             key={product.id}
             backgroundColor="gray.100"
             spacing={3}
-            
           >
-              <Image
-                maxHeight={128}
-                objectFit="cover"
-                src={product.image}
-              ></Image>
+            <Image
+              maxHeight={128}
+              objectFit="cover"
+              src={product.image}
+            ></Image>
             <Stack spacing={1}>
               <Text>{product.title}</Text>
               <Text fontSize="sm" fontWeight="500" color="green.500">
-                {parseCurrency(product.price)}
+                {parseCurrency(product.price,0)}
               </Text>
             </Stack>
             <Button
@@ -57,9 +69,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           </Stack>
         ))}
       </Grid>
-      {Boolean(cart.length) && (
-        <Carrito cart={cart}/>
-      )}
+      {Boolean(cart.length) && <Basket cart={cart} />}
     </Stack>
   );
 };
