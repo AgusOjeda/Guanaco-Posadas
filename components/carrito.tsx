@@ -1,7 +1,17 @@
 import React from "react";
 import { ICarrito, Product } from "../product/types";
 import Link from "next/link";
-import { Box, Divider, Flex, Grid, Image, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Flex,
+  Grid,
+  IconButton,
+  Image,
+  Spacer,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
@@ -14,12 +24,14 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
+import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { countAllBasket, parseCurrency } from "../helper/helper";
 import CheckoutWhatsapp from "./CheckoutWhatsapp";
 
 interface Props {
   cart: ICarrito[];
 }
+
 
 const Basket: React.FC<Props> = ({ cart }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,38 +60,61 @@ const Basket: React.FC<Props> = ({ cart }) => {
       );
   }, [cart]);
   return (
-    <><Flex
-      padding={4}
-      bottom={4}
-      position="sticky"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Button ref={btnRef} colorScheme="purple" onClick={onOpen}>
-        {" "}
-        Completar pedido ({countAllBasket(cart)}){" "}
-        {cart.length == 1 ? "producto" : "productos"}
-      </Button>
-    </Flex><Drawer
-      isOpen={isOpen}
-      placement="right"
-      onClose={onClose}
-      finalFocusRef={btnRef}
-    >
+    <>
+      <Flex
+        padding={4}
+        bottom={4}
+        position="sticky"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Button ref={btnRef} colorScheme="purple" onClick={onOpen}>
+          {" "}
+          Completar pedido ({countAllBasket(cart)}){" "}
+          {cart.length == 1 ? "producto" : "productos"}
+        </Button>
+      </Flex>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <Text>Basket</Text>
+            <Text>Carro</Text>
           </DrawerHeader>
 
           <DrawerBody>
             {cart.map((product) => (
               <Stack key={product.id}>
                 <Stack spacing={1}>
-                  <Text>
-                    {product.title} x{product.quantity}
-                  </Text>
+                  <Flex>
+                    <Text alignItems="flex-start" padding={2}>
+                      {product.title} x{product.quantity}
+                    </Text>
+                    <Spacer/>
+                    <IconButton
+                      aria-label="Search database"
+                      color="red"
+                      variant="ghost"
+                      icon={<MinusIcon />}
+                    />
+                    <IconButton
+                      aria-label="Search database"
+                      color="red"
+                      variant="ghost"
+                      icon={<AddIcon />}
+                    />                  
+                    <IconButton
+                      aria-label="Search database"
+                      color="red"
+                      variant="ghost"
+                      icon={<DeleteIcon />}
+                    />
+                  </Flex>
                   <Text fontSize="sm" fontWeight="500" color="green.500">
                     {parseCurrency(product.price, product.quantity)}
                   </Text>
@@ -91,7 +126,7 @@ const Basket: React.FC<Props> = ({ cart }) => {
 
           <DrawerFooter>
             <Grid>
-              <Divider/>
+              <Divider />
               <Text
                 fontSize="large"
                 fontWeight="600"
@@ -103,18 +138,20 @@ const Basket: React.FC<Props> = ({ cart }) => {
                 Total:
                 {parseCurrency(
                   cart.reduce(
-                    (total, product) => total + product.price * product.quantity,
+                    (total, product) =>
+                      total + product.price * product.quantity,
                     0
                   ),
                   0
                 )}
               </Text>
-              <Divider/>
+              <Divider />
               <CheckoutWhatsapp cart={cart} text={text}></CheckoutWhatsapp>
             </Grid>
           </DrawerFooter>
         </DrawerContent>
-      </Drawer></>
+      </Drawer>
+    </>
   );
 };
 

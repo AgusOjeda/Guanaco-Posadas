@@ -1,4 +1,5 @@
-import { ICarrito } from "../product/types";
+import React from "react";
+import { ICarrito, Product } from "../product/types";
 
 export function parseCurrency(value: number, quantity: number): string {
   if(quantity === 0){
@@ -12,6 +13,7 @@ export function parseCurrency(value: number, quantity: number): string {
     });
   }
 
+  
 export function countAllBasket(cart: ICarrito[]): number{
   return cart.reduce(
     (total, product) => total + product.quantity,
