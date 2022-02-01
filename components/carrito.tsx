@@ -30,9 +30,12 @@ import CheckoutWhatsapp from "./CheckoutWhatsapp";
 
 interface Props {
   cart: ICarrito[];
+  onAdd:(product: ICarrito) => void;
+  onRemove:(product: ICarrito) => void;
+  remove:(product: ICarrito) => void;
 }
 
-const Basket: React.FC<Props> = ({ cart }) => {
+const Basket: React.FC<Props> = ({ cart, onAdd, onRemove, remove }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   const text = React.useMemo(() => {
@@ -100,18 +103,21 @@ const Basket: React.FC<Props> = ({ cart }) => {
                         color="red"
                         variant="ghost"
                         icon={<MinusIcon />}
+                        onClick={() => onRemove(product)}
                       />
                       <IconButton
                         aria-label="Agregar una unidad"
                         color="red"
                         variant="ghost"
                         icon={<AddIcon />}
+                        onClick={() => onAdd(product)}
                       />
                       <IconButton
                         aria-label="Borrar completamente"
                         color="red"
                         variant="ghost"
                         icon={<DeleteIcon />}
+                        onClick={() => remove(product)}
                       />
                     </Flex>
                   </Flex>

@@ -14,14 +14,14 @@ interface Props {
 const IndexRoute: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<ICarrito[]>([]);
 
-  function handleAddToCart(product: Product) {
+  const handleAddToCart = (product: Product): void => {
     let newCartProduct: ICarrito;
     newCartProduct = {
       id: product.id,
       title: product.title,
       price: product.price,
-      quantity: 0
-    }
+      quantity: 0,
+    };
     const exist = cart.find((x) => x.id === newCartProduct.id);
     if (exist) {
       setCart(
@@ -29,11 +29,43 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           x.id === product.id ? { ...exist, quantity: exist.quantity + 1 } : x
         )
       );
-    }else{
-      setCart([...cart, {...newCartProduct, quantity:1}]);
-
+    } else {
+      setCart([...cart, { ...newCartProduct, quantity: 1 }]);
     }
+  };
 
+  const handleAddToCartFromBasket = (product: ICarrito): void => {
+    const exist = cart.find((x) => x.id === product.id);
+    if (exist) {
+      setCart(
+        cart.map((x) =>
+          x.id === product.id ? { ...exist, quantity: exist.quantity + 1 } : x
+        )
+      );
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
+  };
+
+  const handleOnRemove = (product: ICarrito): void => {
+    const exist = cart.find((x) => x.id === product.id);
+    if(exist.quantity === 1){
+      setCart(cart.filter((x) => x.id !== product.id)) //si el producto solo tiene un cantidad de 1, sera removido del array
+    }else{
+      setCart(
+        cart.map((x) =>
+          x.id === product.id ? { ...exist, quantity: exist.quantity - 1 } : x
+        )
+      );
+    }
+  }
+
+  const handleRemoveFromBasket = (product: ICarrito): void => {
+    const exist = cart.find((x) => x.id === product.id);
+    if(exist)
+      setCart(cart.filter((x) => x.id !== product.id))
+    else
+      console.log("item not found")
   }
 
   return (
@@ -55,7 +87,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             <Stack spacing={1}>
               <Text>{product.title}</Text>
               <Text fontSize="sm" fontWeight="500" color="green.500">
-                {parseCurrency(product.price,0)}
+                {parseCurrency(product.price, 0)}
               </Text>
             </Stack>
             <Button
@@ -69,7 +101,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           </Stack>
         ))}
       </Grid>
-      {Boolean(cart.length) && <Basket cart={cart} />}
+      {Boolean(cart.length) && <Basket onAdd={handleAddToCartFromBasket} onRemove={handleOnRemove} remove={handleRemoveFromBasket} cart={cart} />}
     </Stack>
   );
 };
