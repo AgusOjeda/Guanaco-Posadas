@@ -32,11 +32,9 @@ interface Props {
   cart: ICarrito[];
 }
 
-
 const Basket: React.FC<Props> = ({ cart }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
-
   const text = React.useMemo(() => {
     return cart
       .reduce(
@@ -90,30 +88,32 @@ const Basket: React.FC<Props> = ({ cart }) => {
           <DrawerBody>
             {cart.map((product) => (
               <Stack key={product.id}>
-                <Stack spacing={1}>
+                <Stack spacing={0}>
                   <Flex>
                     <Text alignItems="flex-start" padding={2}>
                       {product.title} x{product.quantity}
                     </Text>
-                    <Spacer/>
-                    <IconButton
-                      aria-label="Search database"
-                      color="red"
-                      variant="ghost"
-                      icon={<MinusIcon />}
-                    />
-                    <IconButton
-                      aria-label="Search database"
-                      color="red"
-                      variant="ghost"
-                      icon={<AddIcon />}
-                    />                  
-                    <IconButton
-                      aria-label="Search database"
-                      color="red"
-                      variant="ghost"
-                      icon={<DeleteIcon />}
-                    />
+                    <Spacer />
+                    <Flex justify="space-between">
+                      <IconButton
+                        aria-label="Eliminar una unidad"
+                        color="red"
+                        variant="ghost"
+                        icon={<MinusIcon />}
+                      />
+                      <IconButton
+                        aria-label="Agregar una unidad"
+                        color="red"
+                        variant="ghost"
+                        icon={<AddIcon />}
+                      />
+                      <IconButton
+                        aria-label="Borrar completamente"
+                        color="red"
+                        variant="ghost"
+                        icon={<DeleteIcon />}
+                      />
+                    </Flex>
                   </Flex>
                   <Text fontSize="sm" fontWeight="500" color="green.500">
                     {parseCurrency(product.price, product.quantity)}
