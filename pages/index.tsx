@@ -80,8 +80,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 				maxWidth="container.xl"
 				padding={4}
 			>	
-					
-		
 				<HeaderProducts/>
 				<AnimateSharedLayout>
 					<Stack spacing={6}>
@@ -106,7 +104,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 										objectFit="cover"
 										src={product.image}
 										onClick={() => setSelectedImage(product.image)}
-									></Image>
+									/>
 									<Stack spacing={1}>
 										<Text>{product.title}</Text>
 										<Text fontSize="sm" fontWeight="500" color="green.500">
@@ -118,8 +116,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 										colorScheme="primary"
 										variant="outline"
 										size="sm"
-									>
-                Agregar
+									>Agregar
 									</Button>
 								</Stack>
 							))}
